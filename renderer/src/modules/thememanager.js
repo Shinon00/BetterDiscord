@@ -1,88 +1,59 @@
-import {Config} from "data";
-import AddonManager from "./addonmanager";
-import AddonError from "../structs/addonerror";
-import Settings from "./settingsmanager";
-import DOMManager from "./dommanager";
-import Strings from "./strings";
-
-import Toasts from "../ui/toasts";
-import Modals from "../ui/modals";
-import SettingsRenderer from "../ui/settings";
-
-const path = require("path");
-
-export default new class ThemeManager extends AddonManager {
-    get name() {return "ThemeManager";}
-    get extension() {return ".theme.css";}
-    get duplicatePattern() {return /\.theme\s?\([0-9]+\)\.css/;}
-    get addonFolder() {return path.resolve(Config.dataPath, "themes");}
-    get prefix() {return "theme";}
-    get language() {return "css";}
-
-    initialize() {
-        const errors = super.initialize();
-        Settings.registerPanel("themes", Strings.Panels.themes, {
-            order: 4,
-            element: SettingsRenderer.getAddonPanel(Strings.Panels.themes, this.addonList, this.state, {
-                type: this.prefix,
-                folder: this.addonFolder,
-                onChange: this.toggleTheme.bind(this),
-                reload: this.reloadTheme.bind(this),
-                refreshList: this.updateThemeList.bind(this),
-                saveAddon: this.saveAddon.bind(this),
-                editAddon: this.editAddon.bind(this),
-                deleteAddon: this.deleteAddon.bind(this),
-                prefix: this.prefix
-            })
-        });
-        return errors;
-    }
-
-    /* Aliases */
-    updateThemeList() {return this.updateList();}
-    loadAllThemes() {return this.loadAllAddons();}
-
-    enableTheme(idOrAddon) {return this.enableAddon(idOrAddon);}
-    disableTheme(idOrAddon) {return this.disableAddon(idOrAddon);}
-    toggleTheme(id) {return this.toggleAddon(id);}
-
-    unloadTheme(idOrFileOrAddon) {return this.unloadAddon(idOrFileOrAddon);}
-    loadTheme(filename) {return this.loadAddon(filename);}
-    reloadTheme(idOrFileOrAddon) {return this.reloadAddon(idOrFileOrAddon);}
-
-    loadAddon(filename, shouldCTE = true) {
-        const error = super.loadAddon(filename, shouldCTE);
-        if (error && shouldCTE) Modals.showAddonErrors({themes: [error]});
-        return error;
-    }
-
-    /* Overrides */
-    initializeAddon(addon) {
-        if (!addon.name || !addon.author || !addon.description || !addon.version) return new AddonError(addon.name || addon.filename, addon.filename, "Addon is missing name, author, description, or version", {message: "Addon must provide name, author, description, and version.", stack: ""}, this.prefix);
-    }
-
-    requireAddon(filename) {
-        const addon = super.requireAddon(filename);
-        addon.css = addon.fileContent;
-        delete addon.fileContent;
-        if (addon.format == "json") addon.css = addon.css.split("\n").slice(1).join("\n");
-        return addon;
-    }
-
-    startAddon(id) {return this.addTheme(id);}
-    stopAddon(id) {return this.removeTheme(id);}
-
-    addTheme(idOrAddon) {
-        const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
-        if (!addon) return;
-        DOMManager.injectTheme(addon.slug + "-theme-container", addon.css);
-        Toasts.show(Strings.Addons.enabled.format({name: addon.name, version: addon.version}));
-    }
-
-    removeTheme(idOrAddon) {
-        const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
-        if (!addon) return;
-        DOMManager.removeTheme(addon.slug + "-theme-container");
-        Toasts.show(Strings.Addons.disabled.format({name: addon.name, version: addon.version}));
-    }
-};
+/**
+* @name Solyanka1.2
+* @version 1.2
+* @description Спасибо что установили нашу тему, не забывайте оставлять отзывы.
+* @author Kopkoplimon
+* @authorId 777115234229420033
+* @invite 5uQz2DC
+* @source https://vsthemes.org/user/kopkoplimon/
+* @donate https://www.donationalerts.com/r/kopkoplimon
+*/
+@import url("https://discordstyles.github.io/FrostedGlass/dist/FrostedGlass.css");
+@import url('https://discordstyles.github.io/RadialStatus/dist/RadialStatus.css');
+@import url('https://discordstyles.github.io/HorizontalServerList/dist/HorizontalServerList.css');
+:root {
+--background-image: url('https://i.imgur.com/627AVP4.jpg');
+--background-image-blur: 0px;
+--background-image-size: cover;
+--background-image-position: center;
+--popout-modal-image: url('https://i.imgur.com/5TaTUhU.jpg');
+--popout-modal-blur: 10px;
+--popout-modal-size: cover;
+--popout-modal-position: center;
+--home-button-image: url('https://i.imgur.com/Tkj42MF.png');
+--home-button-size: cover;
+--home-button-position: center;
+--serverlist-brightness: 0.29;
+--left-brightness: 0.6;
+--middle-brightness: 0.29;
+--right-brightness: 0.6;
+--popout-modal-brightness: 0;
+--gradient-primary: 101,86,93; 
+--gradient-secondary: 214,91,111;
+--gradient-direction: 185deg;
+--tint-colour: 255,51,159;
+--tint-brightness: 0;
+--window-padding: 13px;
+--window-roundness: 25px;
+--scrollbar-colour: #ffffff0d;
+--link-colour: #00b0f4;
+--show-gift-gif-buttons: no-repeat;
+--font: 'Whitney';
+--update-notice-1: none;
+--HSL-server-icon-size: 40px;
+--HSL-server-spacing: 10px;
+--rs-small-spacing: 1px;
+--rs-medium-spacing: 1px;
+--rs-large-spacing: 4px;
+--rs-small-width: 2px;
+--rs-medium-width: 4px;
+--rs-large-width: 4px;
+--rs-avatar-shape: 50%;
+--rs-online-color: #43b581;
+--rs-idle-color: #faa61a;
+--rs-dnd-color: #f04747;
+--rs-offline-color: #636b75;
+--rs-streaming-color: #643da7;
+--rs-invisible-color: #747f8d;
+--rs-phone-visible: block;
+}
